@@ -19,14 +19,12 @@ Instead of relying on lossy system converters, SVG Studio Export uses the browse
 
 ## What It Does
 
-- Import individual SVG files or an entire folder.
+- Import one or more SVG files from your machine.
 - Batch convert SVG to PNG with browser-native rendering.
-- Compare original SVG and exported PNG side by side.
-- Apply export presets such as WeChat cover, inline article image, and 16:9 output.
-- Rename outputs with prefix, suffix, numeric sequence, and conflict-safe file names.
-- Download all generated PNG files as a ZIP.
-- Save generated PNG files directly into a chosen output directory in supported browsers.
-- Mark previously exported files as stale when export settings change.
+- Adjust export size with scale, width, or height.
+- Keep transparency or export with a solid background color.
+- Add a shared suffix to exported file names.
+- Download generated PNG files one by one or all at once.
 
 ## Why This Exists
 
@@ -49,28 +47,20 @@ This project is built for the common case where you want a practical, local, bro
 
 ### Batch workflow
 
-- Import a folder and scan nested `.svg` files.
-- Convert all files in one pass.
-- Export ZIP archives for handoff.
+- Import multiple SVG files in one pass.
+- Convert all files together.
+- Download all generated PNG files at once.
 
-### Naming rules
+### Export controls
 
-- Add a shared prefix.
-- Add a shared suffix.
-- Add padded sequence numbers.
-- Automatically resolve duplicate output names.
+- Scale with preset multipliers from `1x` to `4x`
+- Override width or height manually
+- Preserve transparent backgrounds
+- Fill the background with a custom color when needed
 
-### Visual review
+### Naming
 
-- See the original SVG and exported PNG together.
-- Quickly spot font fallback, spacing drift, or scale issues.
-
-### Output presets
-
-- WeChat cover `900 × 383`
-- Inline article image `1080 × 608`
-- 16:9 `1200 × 675`
-- Full HD `1920 × 1080`
+- Add a shared export suffix such as `-export`
 
 ## GitHub Pages
 
@@ -103,8 +93,7 @@ http://127.0.0.1:8765/
 ## Browser Support
 
 - Best experience: Chromium-based browsers
-- Folder import: works in modern Chromium browsers, with fallback to `webkitdirectory`
-- Write to directory: requires the File System Access API
+- Works in modern desktop browsers with SVG and Canvas support
 
 ## Project Structure
 
@@ -121,10 +110,8 @@ http://127.0.0.1:8765/
 ## Roadmap
 
 - Export WebP and JPG alongside PNG
-- Add drag-sort for export order
-- Add font dependency diagnostics
+- Add better font diagnostics
 - Add a desktop build with Electron or Tauri
-- Add watch mode for auto conversion from a folder
 
 ## Star History
 

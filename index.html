@@ -3,25 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SVG Studio Export</title>
+    <title>SVG 转 PNG 工具</title>
     <style>
       :root {
-        --bg: #f4efe6;
-        --panel: rgba(255, 255, 255, 0.8);
-        --panel-border: rgba(17, 43, 69, 0.1);
-        --text: #173149;
-        --muted: #60707d;
-        --deep: #12304c;
-        --accent: #ff7d40;
-        --accent-soft: #ffe7da;
-        --success: #248d5c;
-        --success-soft: rgba(36, 141, 92, 0.12);
-        --warning: #b46528;
-        --warning-soft: rgba(180, 101, 40, 0.12);
-        --danger: #b64534;
-        --danger-soft: rgba(182, 69, 52, 0.12);
-        --info-soft: rgba(18, 48, 76, 0.08);
-        --shadow: 0 18px 48px rgba(17, 43, 69, 0.08);
+        --bg: #f6f1e8;
+        --panel: rgba(255, 255, 255, 0.78);
+        --panel-border: rgba(18, 41, 64, 0.1);
+        --text: #18344d;
+        --muted: #5f6f7c;
+        --accent: #ff7b3d;
+        --accent-soft: #ffe7d7;
+        --deep: #112b45;
+        --success: #21885a;
+        --success-soft: rgba(33, 136, 90, 0.12);
+        --warning: #b56a29;
+        --warning-soft: rgba(181, 106, 41, 0.12);
+        --shadow: 0 18px 48px rgba(16, 39, 63, 0.08);
       }
 
       * {
@@ -33,8 +30,8 @@
         font-family: "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at top right, rgba(255, 125, 64, 0.12), transparent 24%),
-          linear-gradient(180deg, #fbf8f3 0%, var(--bg) 100%);
+          radial-gradient(circle at top right, rgba(255, 123, 61, 0.12), transparent 26%),
+          linear-gradient(180deg, #fbf8f2 0%, var(--bg) 100%);
       }
 
       button,
@@ -44,9 +41,9 @@
       }
 
       .page {
-        max-width: 1280px;
+        max-width: 1240px;
         margin: 0 auto;
-        padding: 38px 24px 64px;
+        padding: 40px 24px 64px;
       }
 
       .hero {
@@ -68,12 +65,12 @@
 
       h1 {
         margin: 18px 0 10px;
-        font-size: clamp(34px, 6vw, 54px);
+        font-size: clamp(36px, 6vw, 62px);
         line-height: 1.04;
       }
 
       .subtitle {
-        max-width: 800px;
+        max-width: 860px;
         margin: 0;
         font-size: 17px;
         line-height: 1.8;
@@ -82,23 +79,23 @@
 
       .layout {
         display: grid;
-        grid-template-columns: 380px minmax(0, 1fr);
+        grid-template-columns: 360px minmax(0, 1fr);
         gap: 20px;
-        align-items: start;
       }
 
       .panel {
-        border-radius: 24px;
+        border-radius: 28px;
         border: 1px solid var(--panel-border);
         background: var(--panel);
         box-shadow: var(--shadow);
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(18px);
       }
 
       .sidebar {
         position: sticky;
         top: 24px;
         padding: 24px;
+        align-self: start;
       }
 
       .content {
@@ -108,7 +105,7 @@
       .section + .section {
         margin-top: 22px;
         padding-top: 22px;
-        border-top: 1px dashed rgba(23, 49, 73, 0.12);
+        border-top: 1px dashed rgba(24, 52, 77, 0.12);
       }
 
       .section-title {
@@ -123,14 +120,7 @@
         margin-bottom: 12px;
       }
 
-      .field-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      .field label,
-      .hint-title {
+      .field label {
         font-size: 14px;
         font-weight: 600;
         color: var(--muted);
@@ -140,10 +130,17 @@
       .field select {
         width: 100%;
         padding: 12px 14px;
+        border: 1px solid rgba(24, 52, 77, 0.12);
         border-radius: 14px;
-        border: 1px solid rgba(23, 49, 73, 0.12);
-        background: rgba(255, 255, 255, 0.84);
+        font-size: 14px;
         color: var(--text);
+        background: rgba(255, 255, 255, 0.84);
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
 
       .toggle {
@@ -151,8 +148,8 @@
         align-items: center;
         gap: 10px;
         margin-top: 8px;
-        color: var(--muted);
         font-size: 14px;
+        color: var(--muted);
       }
 
       .toggle input {
@@ -169,33 +166,31 @@
         color: var(--muted);
       }
 
-      .mini-note {
-        margin-top: 8px;
-        font-size: 12px;
+      .warning-box {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 123, 61, 0.08);
+        color: #7a4d1f;
+        font-size: 13px;
         line-height: 1.7;
-        color: var(--muted);
       }
 
-      .import-actions,
-      .bulk-actions,
-      .output-actions {
+      .actions {
         display: flex;
-        flex-wrap: wrap;
         gap: 10px;
-      }
-
-      .output-actions {
-        margin-top: 12px;
+        flex-wrap: wrap;
+        margin-top: 16px;
       }
 
       button {
         appearance: none;
         border: 0;
         border-radius: 14px;
-        padding: 12px 16px;
-        cursor: pointer;
+        padding: 12px 18px;
         font-size: 14px;
         font-weight: 700;
+        cursor: pointer;
         transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
       }
 
@@ -211,74 +206,24 @@
 
       .primary {
         color: #fff;
-        background: linear-gradient(135deg, var(--accent), #ff9861);
+        background: linear-gradient(135deg, var(--accent), #ff955c);
       }
 
       .secondary {
         color: var(--deep);
-        background: rgba(18, 48, 76, 0.08);
-      }
-
-      .ghost {
-        color: var(--deep);
-        background: rgba(255, 255, 255, 0.6);
-        border: 1px solid rgba(18, 48, 76, 0.08);
-      }
-
-      .status-box {
-        margin-top: 14px;
-        padding: 14px 16px;
-        border-radius: 16px;
-        font-size: 13px;
-        line-height: 1.7;
-        display: none;
-      }
-
-      .status-box[data-tone="info"] {
-        display: block;
-        color: var(--deep);
-        background: rgba(18, 48, 76, 0.08);
-      }
-
-      .status-box[data-tone="success"] {
-        display: block;
-        color: var(--success);
-        background: var(--success-soft);
-      }
-
-      .status-box[data-tone="warning"] {
-        display: block;
-        color: var(--warning);
-        background: var(--warning-soft);
-      }
-
-      .status-box[data-tone="error"] {
-        display: block;
-        color: var(--danger);
-        background: var(--danger-soft);
-      }
-
-      .dir-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 7px 10px;
-        border-radius: 999px;
-        background: rgba(18, 48, 76, 0.08);
-        color: var(--deep);
-        font-size: 12px;
-        font-weight: 700;
+        background: rgba(17, 43, 69, 0.08);
       }
 
       .dropzone {
         display: grid;
         place-items: center;
         min-height: 220px;
-        padding: 28px;
+        padding: 26px;
         border-radius: 24px;
-        border: 2px dashed rgba(255, 125, 64, 0.26);
+        border: 2px dashed rgba(255, 123, 61, 0.25);
         background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.9)),
-          radial-gradient(circle at top right, rgba(255, 125, 64, 0.1), transparent 26%);
+          linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.88)),
+          radial-gradient(circle at top right, rgba(255, 123, 61, 0.08), transparent 26%);
         text-align: center;
         cursor: pointer;
         transition: border-color 120ms ease, transform 120ms ease, background 120ms ease;
@@ -288,8 +233,8 @@
         border-color: var(--accent);
         transform: translateY(-2px);
         background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.94)),
-          radial-gradient(circle at top right, rgba(255, 125, 64, 0.18), transparent 30%);
+          linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.94)),
+          radial-gradient(circle at top right, rgba(255, 123, 61, 0.16), transparent 30%);
       }
 
       .dropzone strong {
@@ -323,68 +268,40 @@
       }
 
       .empty {
-        padding: 48px 20px 20px;
+        padding: 46px 20px 18px;
         text-align: center;
         color: var(--muted);
       }
 
       .card {
         display: grid;
-        grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.9fr);
+        grid-template-columns: 280px minmax(0, 1fr);
         gap: 18px;
         padding: 18px;
-        border-radius: 22px;
-        border: 1px solid rgba(23, 49, 73, 0.1);
+        border-radius: 20px;
+        border: 1px solid rgba(24, 52, 77, 0.1);
         background: rgba(255, 255, 255, 0.84);
       }
 
-      .compare-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      .compare-panel {
-        min-width: 0;
-      }
-
-      .compare-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--muted);
-      }
-
-      .compare-canvas {
+      .preview {
         display: grid;
         place-items: center;
-        min-height: 200px;
-        padding: 12px;
+        min-height: 180px;
+        padding: 10px;
         border-radius: 18px;
         background:
-          linear-gradient(45deg, rgba(18, 48, 76, 0.04) 25%, transparent 25%, transparent 75%, rgba(18, 48, 76, 0.04) 75%),
-          linear-gradient(45deg, rgba(18, 48, 76, 0.04) 25%, transparent 25%, transparent 75%, rgba(18, 48, 76, 0.04) 75%);
+          linear-gradient(45deg, rgba(17, 43, 69, 0.04) 25%, transparent 25%, transparent 75%, rgba(17, 43, 69, 0.04) 75%),
+          linear-gradient(45deg, rgba(17, 43, 69, 0.04) 25%, transparent 25%, transparent 75%, rgba(17, 43, 69, 0.04) 75%);
         background-size: 24px 24px;
         background-position: 0 0, 12px 12px;
       }
 
-      .compare-canvas img {
+      .preview img {
         max-width: 100%;
-        max-height: 230px;
+        max-height: 220px;
         display: block;
         border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(17, 43, 69, 0.12);
-      }
-
-      .placeholder {
-        padding: 12px;
-        text-align: center;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.7;
+        box-shadow: 0 8px 24px rgba(16, 39, 63, 0.12);
       }
 
       .meta {
@@ -392,17 +309,10 @@
       }
 
       .meta h3 {
-        margin: 0 0 8px;
+        margin: 0 0 10px;
         font-size: 18px;
         line-height: 1.4;
         word-break: break-all;
-      }
-
-      .meta p {
-        margin: 0 0 8px;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.7;
       }
 
       .badges {
@@ -423,7 +333,7 @@
 
       .badge.info {
         color: var(--deep);
-        background: var(--info-soft);
+        background: rgba(17, 43, 69, 0.08);
       }
 
       .badge.ok {
@@ -436,15 +346,17 @@
         background: var(--warning-soft);
       }
 
-      .badge.error {
-        color: var(--danger);
-        background: var(--danger-soft);
+      .meta p {
+        margin: 0 0 8px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--muted);
       }
 
       .meta-actions {
         display: flex;
-        flex-wrap: wrap;
         gap: 10px;
+        flex-wrap: wrap;
         margin-top: 14px;
       }
 
@@ -454,9 +366,9 @@
         justify-content: center;
         padding: 11px 14px;
         border-radius: 12px;
+        text-decoration: none;
         font-size: 14px;
         font-weight: 700;
-        text-decoration: none;
       }
 
       .meta-actions .download {
@@ -466,7 +378,7 @@
 
       .meta-actions .source {
         color: var(--deep);
-        background: rgba(18, 48, 76, 0.08);
+        background: rgba(17, 43, 69, 0.08);
       }
 
       .meta-actions a.is-disabled {
@@ -474,11 +386,7 @@
         pointer-events: none;
       }
 
-      .warning-text {
-        color: var(--warning);
-      }
-
-      @media (max-width: 1080px) {
+      @media (max-width: 980px) {
         .layout {
           grid-template-columns: 1fr;
         }
@@ -486,29 +394,24 @@
         .sidebar {
           position: static;
         }
-      }
 
-      @media (max-width: 860px) {
         .card {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 720px) {
-        .compare-grid,
-        .field-row {
           grid-template-columns: 1fr;
         }
       }
 
       @media (max-width: 640px) {
         .page {
-          padding: 24px 14px 42px;
+          padding: 24px 14px 40px;
         }
 
-        .sidebar,
-        .content {
+        .content,
+        .sidebar {
           padding: 18px;
+        }
+
+        .field-row {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -517,40 +420,17 @@
     <div class="page">
       <div class="hero">
         <div class="eyebrow">本地渲染，不上传服务器</div>
-        <h1>SVG Studio Export</h1>
+        <h1>SVG 转 PNG 工具</h1>
         <p class="subtitle">
-          这一版把“临时转换器”往前推了一步。你可以直接导入文件夹、套用尺寸预设、对比原图和导出图，
-          再把结果打成 ZIP，或者一口气写进指定输出目录。
+          这个工具走的是浏览器原生渲染链路：读取本地 SVG，在当前浏览器里加载，再画到 Canvas 导出 PNG。
+          它的目标不是“最快”，而是尽量接近你在浏览器里看到的 SVG 效果。
         </p>
       </div>
 
       <div class="layout">
         <aside class="sidebar panel">
           <div class="section">
-            <h2 class="section-title">导入方式</h2>
-            <div class="import-actions">
-              <button class="primary" id="pickFilesButton">选择 SVG</button>
-              <button class="secondary" id="pickFolderButton">导入文件夹</button>
-            </div>
-            <div class="mini-note">
-              文件夹导入会自动扫描其中所有 `.svg`。如果浏览器不支持目录 API，会退回到目录选择输入框。
-            </div>
-            <input id="fileInput" type="file" accept=".svg,image/svg+xml" multiple hidden />
-            <input id="dirInput" type="file" accept=".svg,image/svg+xml" webkitdirectory directory multiple hidden />
-          </div>
-
-          <div class="section">
             <h2 class="section-title">导出设置</h2>
-            <div class="field">
-              <label for="preset">导出预设</label>
-              <select id="preset">
-                <option value="custom" selected>自定义</option>
-                <option value="wechat-cover">公众号封面 900 × 383</option>
-                <option value="article-inline">文章配图 1080 × 608</option>
-                <option value="ratio-16-9">16:9 1200 × 675</option>
-                <option value="full-hd">Full HD 1920 × 1080</option>
-              </select>
-            </div>
             <div class="field">
               <label for="scale">倍率</label>
               <select id="scale">
@@ -578,132 +458,85 @@
               <input id="transparent" type="checkbox" checked />
               <span>保留透明背景</span>
             </label>
-            <div class="mini-note">预设尺寸或手动宽高会优先于倍率。只填一个边时，会自动按比例补齐。</div>
-          </div>
-
-          <div class="section">
-            <h2 class="section-title">文件命名</h2>
             <div class="field">
-              <label for="prefix">统一前缀</label>
-              <input id="prefix" type="text" placeholder="例如 sora-" />
-            </div>
-            <div class="field">
-              <label for="suffix">统一后缀</label>
+              <label for="suffix">导出后缀</label>
               <input id="suffix" type="text" placeholder="例如 -export" />
             </div>
-            <div class="field-row">
-              <div class="field">
-                <label for="startIndex">起始编号</label>
-                <input id="startIndex" type="number" min="0" value="1" />
-              </div>
-              <div class="field">
-                <label for="numberPadding">编号位数</label>
-                <input id="numberPadding" type="number" min="1" max="6" value="3" />
-              </div>
-            </div>
-            <label class="toggle">
-              <input id="appendSequence" type="checkbox" />
-              <span>在文件名前追加递增编号</span>
-            </label>
           </div>
 
           <div class="section">
-            <h2 class="section-title">输出位置</h2>
+            <h2 class="section-title">使用提醒</h2>
             <div class="help">
-              <div>当前输出目录</div>
+              <div>1. 这个工具只在本地浏览器里处理文件，不会上传 SVG。</div>
+              <div>2. 如果 SVG 依赖某个你电脑里没有的字体，PNG 仍然可能和设计稿有差异。</div>
+              <div>3. 真正想要稳定 1:1，最稳的方式仍然是把文字转路径后再导出。</div>
             </div>
-            <div class="dir-chip" id="outputDirChip">未选择</div>
-            <div class="output-actions">
-              <button class="secondary" id="pickOutputDirButton">选择输出目录</button>
-              <button class="secondary" id="saveToDirectoryButton" disabled>写入目录</button>
-              <button class="secondary" id="downloadZipButton" disabled>下载 ZIP</button>
+            <div class="warning-box">
+              如果你发现某张图和 SVG 仍然不一致，通常不是缩放问题，而是字体或浏览器对 SVG 特性的支持差异。
             </div>
-            <div class="mini-note">“写入目录”需要浏览器支持文件系统访问 API，通常在 Chromium 系浏览器和 localhost 下可用。</div>
-          </div>
-
-          <div class="section">
-            <h2 class="section-title">操作</h2>
-            <div class="bulk-actions">
+            <div class="actions">
               <button class="primary" id="convertAll">全部转换</button>
-              <button class="ghost" id="clearAll">清空</button>
+              <button class="secondary" id="downloadAll">全部下载</button>
+              <button class="secondary" id="clearAll">清空</button>
             </div>
-            <div class="help" style="margin-top: 12px">
-              <div>1. ZIP 打包和写入目录都只处理已经生成好的 PNG。</div>
-              <div>2. 如果你修改了尺寸、倍率或背景，旧 PNG 会被标成“需重转”。</div>
-              <div>3. 真正想要稳定 1:1，最稳的办法仍然是把 SVG 中的文字转路径。</div>
-            </div>
-            <div class="status-box" id="statusBox"></div>
           </div>
         </aside>
 
         <main class="content panel">
-          <div class="dropzone" id="dropzone">
+          <label class="dropzone" id="dropzone">
+            <input id="fileInput" type="file" accept=".svg,image/svg+xml" multiple hidden />
             <div>
-              <strong>拖入 SVG 文件到这里</strong>
-              <span>如果你更想整批处理，左侧的“导入文件夹”会更省事。</span>
+              <strong>拖入 SVG 文件，或者点这里选择</strong>
+              <span>支持批量处理，会按照原始画布尺寸或你设置的倍率导出 PNG。</span>
             </div>
-          </div>
+          </label>
 
           <div class="toolbar">
             <div class="count" id="countText">还没有文件</div>
           </div>
 
           <div class="results" id="results"></div>
-          <div class="empty" id="emptyState">导入后这里会显示原始 SVG 和导出 PNG 的对比预览，以及每张图的输出规则。</div>
+          <div class="empty" id="emptyState">把 SVG 拖进来之后，这里会显示预览、导出尺寸和下载按钮。</div>
         </main>
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script>
-      const PRESETS = {
-        custom: null,
-        "wechat-cover": { width: 900, height: 383 },
-        "article-inline": { width: 1080, height: 608 },
-        "ratio-16-9": { width: 1200, height: 675 },
-        "full-hd": { width: 1920, height: 1080 },
-      };
-
-      const PIXEL_SETTING_FIELDS = ["preset", "scale", "width", "height", "background", "transparent"];
-
       const state = {
         items: [],
-        outputDirectoryHandle: null,
-        status: {
-          tone: "",
-          message: "",
-        },
       };
 
       const fileInput = document.getElementById("fileInput");
-      const dirInput = document.getElementById("dirInput");
       const dropzone = document.getElementById("dropzone");
       const results = document.getElementById("results");
       const emptyState = document.getElementById("emptyState");
       const countText = document.getElementById("countText");
-      const statusBox = document.getElementById("statusBox");
-      const outputDirChip = document.getElementById("outputDirChip");
-
-      const pickFilesButton = document.getElementById("pickFilesButton");
-      const pickFolderButton = document.getElementById("pickFolderButton");
-      const pickOutputDirButton = document.getElementById("pickOutputDirButton");
       const convertAllButton = document.getElementById("convertAll");
+      const downloadAllButton = document.getElementById("downloadAll");
       const clearAllButton = document.getElementById("clearAll");
-      const saveToDirectoryButton = document.getElementById("saveToDirectoryButton");
-      const downloadZipButton = document.getElementById("downloadZipButton");
 
-      const presetInput = document.getElementById("preset");
       const scaleInput = document.getElementById("scale");
       const widthInput = document.getElementById("width");
       const heightInput = document.getElementById("height");
       const backgroundInput = document.getElementById("background");
       const transparentInput = document.getElementById("transparent");
-
-      const prefixInput = document.getElementById("prefix");
       const suffixInput = document.getElementById("suffix");
-      const startIndexInput = document.getElementById("startIndex");
-      const numberPaddingInput = document.getElementById("numberPadding");
-      const appendSequenceInput = document.getElementById("appendSequence");
+
+      function updateCount() {
+        if (!state.items.length) {
+          countText.textContent = "还没有文件";
+          emptyState.style.display = "block";
+          results.innerHTML = "";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        countText.textContent = `共 ${state.items.length} 个文件`;
+      }
+
+      function getDoneCount() {
+        return state.items.filter((item) => item.status === "done" && item.pngUrl).length;
+      }
 
       function uniqueId() {
         return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -722,14 +555,17 @@
         const doc = parser.parseFromString(svgText, "image/svg+xml");
         const svg = doc.documentElement;
 
-        const width = parseDimension(svg.getAttribute("width"));
-        const height = parseDimension(svg.getAttribute("height"));
+        const widthAttr = svg.getAttribute("width");
+        const heightAttr = svg.getAttribute("height");
+        const viewBoxAttr = svg.getAttribute("viewBox");
+
+        const width = parseDimension(widthAttr);
+        const height = parseDimension(heightAttr);
 
         if (width && height) {
           return { width, height, source: "width-height" };
         }
 
-        const viewBoxAttr = svg.getAttribute("viewBox");
         if (viewBoxAttr) {
           const parts = viewBoxAttr
             .trim()
@@ -774,123 +610,6 @@
         };
       }
 
-      function formatBytes(bytes) {
-        if (!bytes) return "0 KB";
-        const kb = bytes / 1024;
-        if (kb < 1024) return `${kb.toFixed(1)} KB`;
-        return `${(kb / 1024).toFixed(2)} MB`;
-      }
-
-      function escapeHtml(value) {
-        return String(value)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#39;");
-      }
-
-      function setStatus(message, tone = "info") {
-        state.status = { message, tone };
-        statusBox.textContent = message;
-        statusBox.dataset.tone = tone;
-      }
-
-      function clearStatus() {
-        state.status = { message: "", tone: "" };
-        statusBox.textContent = "";
-        statusBox.removeAttribute("data-tone");
-      }
-
-      function getDoneItems() {
-        return state.items.filter((item) => item.status === "done" && item.pngBlob && item.pngUrl);
-      }
-
-      function getStaleCount() {
-        return state.items.filter((item) => item.isStale).length;
-      }
-
-      function updateCount() {
-        if (!state.items.length) {
-          countText.textContent = "还没有文件";
-          emptyState.style.display = "block";
-          results.innerHTML = "";
-          return;
-        }
-
-        const doneCount = getDoneItems().length;
-        const staleCount = getStaleCount();
-        const parts = [`共 ${state.items.length} 个文件`, `已转换 ${doneCount} 个`];
-
-        if (staleCount) {
-          parts.push(`${staleCount} 个需重转`);
-        }
-
-        countText.textContent = parts.join("，");
-        emptyState.style.display = "none";
-      }
-
-      function updateOutputDirectoryChip() {
-        outputDirChip.textContent = state.outputDirectoryHandle?.name || "未选择";
-      }
-
-      function updateBulkButtons() {
-        const hasItems = state.items.length > 0;
-        const hasDoneItems = getDoneItems().length > 0;
-
-        convertAllButton.disabled = !hasItems;
-        clearAllButton.disabled = !hasItems;
-        downloadZipButton.disabled = !hasDoneItems;
-        saveToDirectoryButton.disabled = !hasDoneItems;
-      }
-
-      function getFileBaseName(fileName) {
-        return fileName.replace(/\.[^.]+$/i, "");
-      }
-
-      function getOutputBaseName(item, index) {
-        const prefix = prefixInput.value || "";
-        const suffix = suffixInput.value || "";
-        const appendSequence = appendSequenceInput.checked;
-        const startIndex = Number(startIndexInput.value) || 0;
-        const padding = Math.max(1, Number(numberPaddingInput.value) || 1);
-        const sequence = appendSequence ? `${String(startIndex + index).padStart(padding, "0")}-` : "";
-        return `${prefix}${sequence}${getFileBaseName(item.file.name)}${suffix}`;
-      }
-
-      function makeUniqueFileName(fileName, usedNames) {
-        if (!usedNames.has(fileName)) {
-          usedNames.add(fileName);
-          return fileName;
-        }
-
-        const base = getFileBaseName(fileName);
-        const extensionMatch = fileName.match(/(\.[^.]+)$/);
-        const extension = extensionMatch ? extensionMatch[1] : "";
-
-        let counter = 2;
-        while (usedNames.has(`${base}-${counter}${extension}`)) {
-          counter += 1;
-        }
-
-        const uniqueName = `${base}-${counter}${extension}`;
-        usedNames.add(uniqueName);
-        return uniqueName;
-      }
-
-      function getResolvedOutputMap(items = state.items) {
-        const usedNames = new Set();
-        const resolved = new Map();
-
-        items.forEach((item, index) => {
-          const rawName = `${getOutputBaseName(item, index)}.png`;
-          const uniqueName = makeUniqueFileName(rawName, usedNames);
-          resolved.set(item.id, uniqueName);
-        });
-
-        return resolved;
-      }
-
       async function readFileAsText(file) {
         return await file.text();
       }
@@ -913,7 +632,8 @@
         }
       }
 
-      async function renderSvgToPng(svgText, original) {
+      async function renderSvgToPng(svgText) {
+        const original = parseSvgSize(svgText);
         const target = getRenderOptions(original);
         const image = await loadImageFromSvg(svgText);
 
@@ -941,12 +661,22 @@
         return {
           pngUrl: URL.createObjectURL(blob),
           blob,
+          original,
           target,
         };
       }
 
-      function getSourceKey(file, sourcePath) {
-        return [sourcePath, file.size, file.lastModified].join("::");
+      function formatBytes(bytes) {
+        if (!bytes) return "0 KB";
+        const kb = bytes / 1024;
+        if (kb < 1024) return `${kb.toFixed(1)} KB`;
+        return `${(kb / 1024).toFixed(2)} MB`;
+      }
+
+      function buildOutputName(fileName) {
+        const suffix = suffixInput.value || "";
+        const base = fileName.replace(/\.svg$/i, "");
+        return `${base}${suffix}.png`;
       }
 
       function revokeItemUrls(item) {
@@ -954,74 +684,44 @@
         if (item.pngUrl) URL.revokeObjectURL(item.pngUrl);
       }
 
-      function markPixelOutputsStale() {
-        let changed = false;
-        state.items.forEach((item) => {
-          if (item.status === "done" && !item.isStale) {
-            item.isStale = true;
-            changed = true;
-          }
-        });
-
-        if (changed) {
-          setStatus("导出参数已变化，旧 PNG 还在，但建议重新转换一次。", "warning");
-        }
-
-        render();
-      }
-
-      async function addFiles(fileList) {
-        const existingKeys = new Set(state.items.map((item) => item.sourceKey));
-        const svgFiles = [...fileList].filter((file) => {
-          return file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
-        });
-
-        let addedCount = 0;
-
-        for (const file of svgFiles) {
-          const sourcePath = file.webkitRelativePath || file.name;
-          const sourceKey = getSourceKey(file, sourcePath);
-          if (existingKeys.has(sourceKey)) {
-            continue;
-          }
-
-          existingKeys.add(sourceKey);
-          const svgText = await readFileAsText(file);
-          const original = parseSvgSize(svgText);
-          const item = {
-            id: uniqueId(),
-            file,
-            svgText,
-            original,
-            previewUrl: URL.createObjectURL(file),
-            pngUrl: "",
-            pngBlob: null,
-            target: null,
-            error: "",
-            status: "ready",
-            isStale: false,
-            sourcePath,
-            sourceKey,
-          };
-
-          state.items.push(item);
-          addedCount += 1;
-        }
-
-        if (addedCount) {
-          setStatus(`已加入 ${addedCount} 个 SVG 文件。`, "success");
-        } else {
-          setStatus("没有新增 SVG。可能是目录里没有 `.svg`，或者这些文件已经在列表里了。", "warning");
-        }
-
-        render();
-      }
-
       function removeItem(id) {
         const index = state.items.findIndex((item) => item.id === id);
         if (index === -1) return;
         revokeItemUrls(state.items[index]);
         state.items.splice(index, 1);
+        render();
+      }
+
+      async function addFiles(fileList) {
+        const svgFiles = [...fileList].filter((file) => {
+          return file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
+        });
+
+        const existingKeys = new Set(state.items.map((item) => [item.file.name, item.file.size, item.file.lastModified].join("::")));
+
+        for (const file of svgFiles) {
+          const key = [file.name, file.size, file.lastModified].join("::");
+          if (existingKeys.has(key)) continue;
+          existingKeys.add(key);
+
+          const svgText = await readFileAsText(file);
+          const item = {
+            id: uniqueId(),
+            file,
+            svgText,
+            original: parseSvgSize(svgText),
+            previewUrl: URL.createObjectURL(file),
+            pngUrl: "",
+            pngBlob: null,
+            outputName: buildOutputName(file.name),
+            target: null,
+            error: "",
+            status: "ready",
+          };
+
+          state.items.push(item);
+        }
+
         render();
       }
 
@@ -1035,12 +735,13 @@
             URL.revokeObjectURL(item.pngUrl);
           }
 
-          const result = await renderSvgToPng(item.svgText, item.original);
+          item.outputName = buildOutputName(item.file.name);
+          const result = await renderSvgToPng(item.svgText);
           item.pngUrl = result.pngUrl;
           item.pngBlob = result.blob;
           item.target = result.target;
+          item.original = result.original;
           item.status = "done";
-          item.isStale = false;
         } catch (error) {
           item.status = "error";
           item.error = error.message || "转换失败";
@@ -1050,267 +751,74 @@
       }
 
       async function convertAll() {
-        if (!state.items.length) return;
-
-        let failureCount = 0;
         for (const item of state.items) {
           await convertItem(item);
-          if (item.status === "error") {
-            failureCount += 1;
-          }
-        }
-
-        if (failureCount) {
-          setStatus(`批量转换结束，其中 ${failureCount} 个文件失败。`, "warning");
-        } else {
-          setStatus(`批量转换完成，共生成 ${getDoneItems().length} 个 PNG。`, "success");
         }
       }
 
-      function downloadBlob(blobOrUrl, fileName) {
-        const url = typeof blobOrUrl === "string" ? blobOrUrl : URL.createObjectURL(blobOrUrl);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = fileName;
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
-
-        if (typeof blobOrUrl !== "string") {
-          window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-        }
+      function downloadBlob(url, fileName) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       }
 
-      async function downloadZip() {
-        const doneItems = getDoneItems();
-        if (!doneItems.length) {
-          setStatus("还没有可打包的 PNG。先转换，再下载 ZIP。", "warning");
-          return;
+      async function downloadAll() {
+        const doneItems = state.items.filter((item) => item.pngUrl);
+        for (const item of doneItems) {
+          downloadBlob(item.pngUrl, item.outputName);
+          await new Promise((resolve) => window.setTimeout(resolve, 120));
         }
-
-        if (typeof window.JSZip === "undefined") {
-          setStatus("ZIP 模块加载失败，暂时无法打包。", "error");
-          return;
-        }
-
-        const zip = new window.JSZip();
-        const outputMap = getResolvedOutputMap(state.items);
-
-        doneItems.forEach((item) => {
-          zip.file(outputMap.get(item.id), item.pngBlob);
-        });
-
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        const zipName = `svg-png-export-${new Date().toISOString().slice(0, 19).replaceAll(":", "-")}.zip`;
-        downloadBlob(zipBlob, zipName);
-
-        if (getStaleCount()) {
-          setStatus(`ZIP 已生成，但有 ${getStaleCount()} 张图还是旧设置版本。`, "warning");
-        } else {
-          setStatus(`ZIP 已生成，共打包 ${doneItems.length} 张图。`, "success");
-        }
-      }
-
-      async function pickOutputDirectory() {
-        if (typeof window.showDirectoryPicker !== "function") {
-          setStatus("当前浏览器不支持直接选择输出目录。你仍然可以用 ZIP 下载。", "warning");
-          return;
-        }
-
-        try {
-          state.outputDirectoryHandle = await window.showDirectoryPicker({ mode: "readwrite" });
-          updateOutputDirectoryChip();
-          setStatus(`输出目录已设置为“${state.outputDirectoryHandle.name}”。`, "success");
-        } catch (error) {
-          if (error?.name !== "AbortError") {
-            setStatus("选择输出目录失败。", "error");
-          }
-        }
-      }
-
-      async function saveAllToDirectory() {
-        const doneItems = getDoneItems();
-        if (!doneItems.length) {
-          setStatus("还没有可写入目录的 PNG。先转换，再导出。", "warning");
-          return;
-        }
-
-        if (!state.outputDirectoryHandle) {
-          await pickOutputDirectory();
-          if (!state.outputDirectoryHandle) {
-            return;
-          }
-        }
-
-        const outputMap = getResolvedOutputMap(state.items);
-        let writtenCount = 0;
-
-        try {
-          for (const item of doneItems) {
-            const fileName = outputMap.get(item.id);
-            const handle = await state.outputDirectoryHandle.getFileHandle(fileName, { create: true });
-            const writable = await handle.createWritable();
-            await writable.write(item.pngBlob);
-            await writable.close();
-            writtenCount += 1;
-          }
-
-          if (getStaleCount()) {
-            setStatus(`已写入 ${writtenCount} 个 PNG 到“${state.outputDirectoryHandle.name}”，但有旧设置文件尚未重转。`, "warning");
-          } else {
-            setStatus(`已写入 ${writtenCount} 个 PNG 到“${state.outputDirectoryHandle.name}”。`, "success");
-          }
-        } catch (error) {
-          setStatus(`写入目录失败：${error.message || "未知错误"}`, "error");
-        }
-      }
-
-      async function importFolderWithPicker() {
-        if (typeof window.showDirectoryPicker === "function") {
-          try {
-            const directoryHandle = await window.showDirectoryPicker();
-            const files = [];
-
-            async function walkDirectory(handle, prefix = "") {
-              for await (const entry of handle.values()) {
-                if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".svg")) {
-                  const file = await entry.getFile();
-                  Object.defineProperty(file, "webkitRelativePath", {
-                    configurable: true,
-                    value: prefix ? `${prefix}/${entry.name}` : entry.name,
-                  });
-                  files.push(file);
-                }
-
-                if (entry.kind === "directory") {
-                  const nextPrefix = prefix ? `${prefix}/${entry.name}` : entry.name;
-                  await walkDirectory(entry, nextPrefix);
-                }
-              }
-            }
-
-            await walkDirectory(directoryHandle);
-
-            if (!files.length) {
-              setStatus("这个目录里没有找到 SVG 文件。", "warning");
-              return;
-            }
-
-            await addFiles(files);
-            return;
-          } catch (error) {
-            if (error?.name === "AbortError") {
-              return;
-            }
-          }
-        }
-
-        dirInput.click();
-      }
-
-      function applyPreset(presetKey) {
-        const preset = PRESETS[presetKey];
-        if (!preset) {
-          return;
-        }
-
-        widthInput.value = String(preset.width);
-        heightInput.value = String(preset.height);
-        markPixelOutputsStale();
-      }
-
-      function syncPresetFromDimensions() {
-        const width = Number(widthInput.value) || 0;
-        const height = Number(heightInput.value) || 0;
-
-        const matchedPresetEntry = Object.entries(PRESETS).find(([key, preset]) => {
-          return key !== "custom" && preset && preset.width === width && preset.height === height;
-        });
-
-        presetInput.value = matchedPresetEntry ? matchedPresetEntry[0] : "custom";
       }
 
       function render() {
         updateCount();
-        updateBulkButtons();
-        updateOutputDirectoryChip();
+        convertAllButton.disabled = state.items.length === 0;
+        downloadAllButton.disabled = getDoneCount() === 0;
+        clearAllButton.disabled = state.items.length === 0;
 
-        if (!state.items.length) {
-          return;
-        }
-
-        const outputMap = getResolvedOutputMap(state.items);
+        if (!state.items.length) return;
 
         results.innerHTML = state.items
           .map((item) => {
-            const plannedTarget = getRenderOptions(item.original);
-            const statusLabel =
-              item.status === "error"
-                ? "失败"
-                : item.isStale
-                  ? "需重转"
-                  : item.status === "done"
-                    ? "已完成"
-                    : item.status === "converting"
-                      ? "转换中"
-                      : "待转换";
+            const badgeText =
+              item.status === "done"
+                ? "已完成"
+                : item.status === "converting"
+                  ? "转换中"
+                  : item.status === "error"
+                    ? "失败"
+                    : "待转换";
 
-            const statusClass =
-              item.status === "error"
-                ? "error"
-                : item.isStale
+            const badgeClass =
+              item.status === "done"
+                ? "ok"
+                : item.status === "error"
                   ? "warn"
-                  : item.status === "done"
-                    ? "ok"
-                    : "info";
+                  : "info";
 
-            const lastExportText = item.target ? `${item.target.width} × ${item.target.height}` : "尚未生成";
-            const outputName = outputMap.get(item.id);
-            const rightPanelTitle = item.pngUrl ? "导出 PNG" : "等待导出";
-            const staleText = item.isStale
-              ? `<p class="warning-text">当前 PNG 还是旧设置生成的，建议点“重新转换”。</p>`
-              : "";
+            const sizeText = item.target
+              ? `${item.target.width} × ${item.target.height}`
+              : `${item.original.width} × ${item.original.height}`;
 
             return `
               <div class="card">
-                <div class="compare-grid">
-                  <div class="compare-panel">
-                    <div class="compare-head">
-                      <span>原始 SVG</span>
-                      <span>${item.original.width} × ${item.original.height}</span>
-                    </div>
-                    <div class="compare-canvas">
-                      <img src="${item.previewUrl}" alt="${escapeHtml(item.file.name)} 原始预览" />
-                    </div>
-                  </div>
-                  <div class="compare-panel">
-                    <div class="compare-head">
-                      <span>${rightPanelTitle}</span>
-                      <span>${item.target ? `${item.target.width} × ${item.target.height}` : "未生成"}</span>
-                    </div>
-                    <div class="compare-canvas">
-                      ${
-                        item.pngUrl
-                          ? `<img src="${item.pngUrl}" alt="${escapeHtml(item.file.name)} PNG 预览" />`
-                          : `<div class="placeholder">还没有 PNG。<br />先转换，再看两侧差异。</div>`
-                      }
-                    </div>
-                  </div>
+                <div class="preview">
+                  <img src="${item.pngUrl || item.previewUrl}" alt="${escapeHtml(item.file.name)}" />
                 </div>
-
                 <div class="meta">
                   <h3>${escapeHtml(item.file.name)}</h3>
                   <div class="badges">
-                    <span class="badge ${statusClass}">${statusLabel}</span>
-                    <span class="badge info">当前设置 ${plannedTarget.width} × ${plannedTarget.height}</span>
-                    <span class="badge info">上次导出 ${lastExportText}</span>
+                    <span class="badge ${badgeClass}">${badgeText}</span>
+                    <span class="badge info">原图 ${item.original.width} × ${item.original.height}</span>
+                    <span class="badge info">导出 ${sizeText}</span>
                   </div>
-                  <p>来源路径：${escapeHtml(item.sourcePath)}</p>
-                  <p>输出文件：${escapeHtml(outputName)}</p>
-                  <p>SVG 尺寸来源：${item.original.source}</p>
+                  <p>输出文件：${escapeHtml(item.outputName)}</p>
+                  <p>SVG 来源：${item.original.source}</p>
                   <p>PNG 大小：${item.pngBlob ? formatBytes(item.pngBlob.size) : "尚未生成"}</p>
-                  ${staleText}
-                  ${item.error ? `<p class="warning-text">${escapeHtml(item.error)}</p>` : ""}
+                  ${item.error ? `<p style="color:#b54d22;">${escapeHtml(item.error)}</p>` : ""}
                   <div class="meta-actions">
                     <a href="#" class="download ${item.pngUrl ? "" : "is-disabled"}" data-download="${item.id}">下载 PNG</a>
                     <a href="#" class="source" data-convert="${item.id}">重新转换</a>
@@ -1327,9 +835,7 @@
             event.preventDefault();
             const id = button.getAttribute("data-convert");
             const item = state.items.find((entry) => entry.id === id);
-            if (item) {
-              await convertItem(item);
-            }
+            if (item) await convertItem(item);
           });
         });
 
@@ -1338,10 +844,8 @@
             event.preventDefault();
             const id = button.getAttribute("data-download");
             const item = state.items.find((entry) => entry.id === id);
-            const outputName = outputMap.get(id);
-
-            if (item?.pngUrl && outputName) {
-              downloadBlob(item.pngUrl, outputName);
+            if (item?.pngUrl) {
+              downloadBlob(item.pngUrl, item.outputName);
             }
           });
         });
@@ -1354,31 +858,19 @@
         });
       }
 
-      pickFilesButton.addEventListener("click", () => fileInput.click());
-      pickFolderButton.addEventListener("click", importFolderWithPicker);
-      pickOutputDirButton.addEventListener("click", pickOutputDirectory);
-      convertAllButton.addEventListener("click", convertAll);
-      saveToDirectoryButton.addEventListener("click", saveAllToDirectory);
-      downloadZipButton.addEventListener("click", downloadZip);
-
-      clearAllButton.addEventListener("click", () => {
-        state.items.forEach(revokeItemUrls);
-        state.items = [];
-        clearStatus();
-        render();
-      });
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
 
       fileInput.addEventListener("change", async (event) => {
         if (event.target.files?.length) {
           await addFiles(event.target.files);
           fileInput.value = "";
-        }
-      });
-
-      dirInput.addEventListener("change", async (event) => {
-        if (event.target.files?.length) {
-          await addFiles(event.target.files);
-          dirInput.value = "";
         }
       });
 
@@ -1395,34 +887,20 @@
       dropzone.addEventListener("drop", async (event) => {
         event.preventDefault();
         dropzone.classList.remove("dragover");
-
         if (event.dataTransfer?.files?.length) {
           await addFiles(event.dataTransfer.files);
         }
       });
 
-      presetInput.addEventListener("change", (event) => {
-        if (event.target.value === "custom") {
-          markPixelOutputsStale();
-          return;
-        }
-
-        applyPreset(event.target.value);
+      convertAllButton.addEventListener("click", convertAll);
+      downloadAllButton.addEventListener("click", downloadAll);
+      clearAllButton.addEventListener("click", () => {
+        state.items.forEach(revokeItemUrls);
+        state.items = [];
+        render();
       });
 
-      [scaleInput, backgroundInput, transparentInput].forEach((input) => {
-        input.addEventListener("change", markPixelOutputsStale);
-      });
-
-      [widthInput, heightInput].forEach((input) => {
-        input.addEventListener("input", () => {
-          syncPresetFromDimensions();
-          markPixelOutputsStale();
-        });
-      });
-
-      [prefixInput, suffixInput, startIndexInput, numberPaddingInput, appendSequenceInput].forEach((input) => {
-        input.addEventListener("input", render);
+      [scaleInput, widthInput, heightInput, backgroundInput, transparentInput, suffixInput].forEach((input) => {
         input.addEventListener("change", render);
       });
 
